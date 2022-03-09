@@ -1,0 +1,17 @@
+with open('/etc/hosts', 'a+') as f:
+    f.write(f'\n127.0.0.1  {domain}')
+profile = FirefoxProfile()
+profile.set_preference('network.proxy.type', 1)
+profile.set_preference('network.proxy.socks', '127.0.0.1')
+profile.set_preference('network.proxy.socks_port', 9050)
+profile.set_preference('network.proxy.no_proxies_on', domain)
+# profile.set_preference("network.proxy.socks_remote_dns", True)
+profile.update_preferences()
+options = Options()
+options.add_argument("--headless")
+driver = webdriver.Firefox(options=options, executable_path='geckodriver',
+                           firefox_profile=profile)
+driver.get(f"http://{domain}/?aw={aw}&aw_conv={aw_conv}&gclid={gclid}")
+time.sleep(20)
+driver.close()
+switch_tor()
